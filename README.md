@@ -1,4 +1,3 @@
-# mcyh234.github.io
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
@@ -52,7 +51,7 @@ body {
 </head>
 
 <body>
-<h1 align="center"> <span class="STYLE4"><span class="STYLE16">ZM V7.1</span> <span class="STYLE7">|</span> <span class="STYLE17">迪士尼配置</span>
+<h1 align="center"> <span class="STYLE4"><span class="STYLE16">ZM V7.1</span> <span class="STYLE7">|</span> <span class="STYLE17">迪士尼配置</span></h1>
 <p align="center" class="STYLE19">|<span class="STYLE15">这只是一个临时网站 很快会被重新设计</span>|</p>
 <p align="center" class="STYLE19">————————————————
 <p align="center" class="STYLE20"><a href="www.baidu.com"><u>加入我们</u></a></p>
