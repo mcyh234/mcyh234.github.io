@@ -52,7 +52,7 @@ body {
 </head>
 
 <body>
-<h1 align="center"> <span class="STYLE4"><span class="STYLE16">ZM V7.1</span> <span class="STYLE7">|</span> <span class="STYLE17">迪士尼配置</span></h1>
+<h1 align="center"> <span class="STYLE4"><span class="STYLE16">ZM V7.1</span> <span class="STYLE7">|</span> <span class="STYLE17">迪士尼配置</span>
 <p align="center" class="STYLE19">|<span class="STYLE15">这只是一个临时网站 很快会被重新设计</span>|</p>
 <p align="center" class="STYLE19">————————————————
 <p align="center" class="STYLE20"><a href="www.baidu.com"><u>加入我们</u></a></p>
