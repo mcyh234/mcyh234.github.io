@@ -1,0 +1,2 @@
+# Preserve the vendor bundle's embedded shader strings without line-ending conversion.
+assets/vendor/three.min.js -diff -text

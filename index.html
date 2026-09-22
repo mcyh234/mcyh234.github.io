@@ -5,20 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <meta name="theme-color" content="#f8f9f6">
-    <meta name="description" content="mcyh234 的个人主页。探索自托管应用、自动化工具和有意思的 Web 实验，查看开源项目与代码。">
+    <meta name="description" content="mcyh234 的个人实验室。把麻烦变成工具，把好奇变成作品。真实可用的自托管应用、自动化与交互实验。">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="mcyh234 · 一边折腾，一边创造">
-    <meta property="og:description" content="从一个小想法，到一个能用的东西。我的开源项目、工具与实验。">
+    <meta property="og:title" content="mcyh234 · 认真解决问题，也认真玩">
+    <meta property="og:description" content="把麻烦变成工具，把好奇变成作品。这里没有终稿，只有下一个更好的版本。">
     <meta property="og:image" content="https://mcyh234.github.io/assets/social.png">
     <meta property="og:locale" content="zh_CN">
     <meta name="twitter:card" content="summary_large_image">
-    <title>mcyh234 · 一边折腾，一边创造</title>
+    <title>mcyh234 · 认真解决问题，也认真玩</title>
     <link rel="icon" href="assets/avatar.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/avatar.png">
     <link rel="preload" href="assets/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="theme.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="lab.css">
+    <script src="motion.js" defer></script>
     <script src="app.js" defer></script>
+    <script src="assets/vendor/three.min.js" defer></script>
+    <script src="scene.js" defer></script>
   </head>
   <body>
     <!-- LUCIDE:START -->
@@ -49,17 +53,22 @@
     <!-- LUCIDE:END -->
     <a class="skip-link" href="#main">跳到主要内容</a>
     <header class="site-header">
+      <div class="reading-progress" aria-hidden="true"></div>
       <div class="container header-inner">
         <a class="brand" href="#home" aria-label="mcyh234 首页">
           <img class="brand-avatar" src="assets/avatar.png" width="34" height="34" alt="">
           <span>mcyh234<span class="brand-dot">.</span></span>
         </a>
         <nav class="desktop-nav" aria-label="主导航">
-          <a href="#projects" data-nav="projects">项目<span class="nav-index">01</span></a>
-          <a href="#about" data-nav="about">关于<span class="nav-index">02</span></a>
+          <a href="#about" data-nav="about">我的主张<span class="nav-index">01</span></a>
+          <a href="#projects" data-nav="projects">折腾记录<span class="nav-index">02</span></a>
           <a href="#contact" data-nav="contact">联系<span class="nav-index">03</span></a>
         </nav>
         <div class="header-actions">
+          <button class="icon-button" id="motion-toggle" type="button" aria-label="暂停动效" aria-pressed="false" data-tooltip="暂停动效" hidden>
+            <svg class="icon motion-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"></rect><rect x="6" y="4" width="4" height="16" rx="1"></rect></svg>
+            <svg class="icon motion-play" aria-hidden="true"><use href="#play"></use></svg>
+          </button>
           <a class="icon-button github-header" href="https://github.com/mcyh234" target="_blank" rel="noopener noreferrer" aria-label="访问 GitHub（新窗口）" data-tooltip="GitHub">
             <svg class="icon" aria-hidden="true"><use href="#github"></use></svg>
           </a>
@@ -75,8 +84,8 @@
         </div>
       </div>
       <nav class="mobile-nav" id="mobile-nav" aria-label="移动端导航" hidden>
-        <a href="#projects"><span>01</span>项目<svg class="icon" aria-hidden="true"><use href="#arrow-down-right"></use></svg></a>
-        <a href="#about"><span>02</span>关于<svg class="icon" aria-hidden="true"><use href="#arrow-down-right"></use></svg></a>
+        <a href="#about"><span>01</span>我的主张<svg class="icon" aria-hidden="true"><use href="#arrow-down-right"></use></svg></a>
+        <a href="#projects"><span>02</span>折腾记录<svg class="icon" aria-hidden="true"><use href="#arrow-down-right"></use></svg></a>
         <a href="#contact"><span>03</span>联系<svg class="icon" aria-hidden="true"><use href="#arrow-down-right"></use></svg></a>
       </nav>
     </header>
@@ -84,34 +93,76 @@
     <main id="main">
       <section class="hero" id="home" aria-labelledby="hero-title">
         <canvas class="hero-canvas" id="pixel-canvas" aria-hidden="true"></canvas>
-        <div class="hero-coordinate coordinate-left" aria-hidden="true">PERSONAL SPACE / 001</div>
-        <div class="hero-coordinate coordinate-right" aria-hidden="true">IDEAS → CODE → REALITY</div>
+        <div class="scene-fallback" aria-hidden="true"><img src="assets/avatar.png" width="300" height="300" alt=""></div>
+        <div class="hero-coordinate coordinate-left"><span class="live-square"></span>INDEPENDENT MIND. HANDS-ON BUILDER.</div>
+        <div class="hero-coordinate coordinate-right" aria-hidden="true">PERSONAL LAB / VOL. 02</div>
         <div class="container hero-content">
-          <div class="intro-label"><span class="small-cross" aria-hidden="true">+</span> HELLO, WORLD. <span class="intro-slash">/</span> 这里是我的一小片互联网</div>
+          <div class="intro-label"><span class="small-cross" aria-hidden="true">+</span> 好奇心驱动，不设标准答案。</div>
           <h1 id="hero-title">mcyh234<span class="title-period">.</span></h1>
-          <p class="hero-subtitle">一边折腾，一边创造。</p>
-          <p class="hero-description">从日常需求出发，写工具、做应用，偶尔造点好玩的。<br>把想法变成代码，把代码变成用得上的东西。</p>
+          <p class="hero-subtitle"><span>把麻烦变成<span class="word-lime">工具</span>，</span><span>把好奇变成<span class="word-blue">作品</span>。</span></p>
+          <p class="hero-description">不止停在「看起来能用」。<br>让它跑起来，变顺手，再加一点自己的意思。</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#projects">看看我的项目<svg class="icon" aria-hidden="true"><use href="#arrow-down-right"></use></svg></a>
-            <a class="button button-quiet" href="https://github.com/mcyh234" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#github"></use></svg>GitHub<svg class="icon icon-small" aria-hidden="true"><use href="#arrow-up-right"></use></svg></a>
-          </div>
-          <div class="hero-topics" aria-label="关注方向">
-            <span><i class="topic-dot dot-green" aria-hidden="true"></i>Self-hosted</span>
-            <span><i class="topic-dot dot-blue" aria-hidden="true"></i>Automation</span>
-            <span><i class="topic-dot dot-orange" aria-hidden="true"></i>Just for fun</span>
+            <a class="button button-primary magnetic" href="#projects">看看我在折腾什么<svg class="icon" aria-hidden="true"><use href="#arrow-down-right"></use></svg></a>
+            <a class="button button-quiet" href="#about">我的主张<svg class="icon icon-small" aria-hidden="true"><use href="#arrow-down"></use></svg></a>
           </div>
         </div>
-        <div class="container hero-bottom"><span>BUILD SMALL. MAKE IT REAL.</span><a href="#projects" aria-label="向下浏览项目"><svg class="icon" aria-hidden="true"><use href="#arrow-down"></use></svg></a><span>OPEN SOURCE, OPEN POSSIBILITIES.</span></div>
+        <div class="scene-caption" aria-hidden="true"><span class="scene-cross">+</span><span>FIG. 001<br>AN IDEA, IN PIECES.</span></div>
+        <div class="scene-controls" id="scene-controls" hidden>
+          <div class="scene-modes" role="group" aria-label="像素装置状态">
+            <button type="button" data-scene-mode="build" aria-pressed="true">组装</button>
+            <button type="button" data-scene-mode="connect" aria-pressed="false">连接</button>
+            <button type="button" data-scene-mode="explode" aria-pressed="false">拆解</button>
+          </div>
+          <button type="button" class="icon-button" id="scene-replay" aria-label="重新组装像素装置" data-tooltip="重新组装"><svg class="icon icon-small" aria-hidden="true"><use href="#rotate-ccw"></use></svg></button>
+        </div>
+        <div class="container hero-bottom"><span>BUILD. BREAK. LEARN. REPEAT.</span><a href="#about" aria-label="向下浏览我的主张"><svg class="icon" aria-hidden="true"><use href="#arrow-down"></use></svg></a><span>STILL CURIOUS<span class="cursor-mark">_</span></span></div>
+      </section>
+
+      <div class="manifesto-ticker" aria-hidden="true">
+        <div class="ticker-track"><span>MAKE IT WORK <i>+</i> MAKE IT CLEAR <i>+</i> MAKE IT YOURS <i>+</i> STAY CURIOUS <i>+</i></span><span>MAKE IT WORK <i>+</i> MAKE IT CLEAR <i>+</i> MAKE IT YOURS <i>+</i> STAY CURIOUS <i>+</i></span></div>
+      </div>
+
+      <section class="about-section section" id="about" aria-labelledby="about-title">
+        <div class="container philosophy-layout">
+          <div class="philosophy-intro reveal">
+            <p class="eyebrow"><span>01 /</span> THE WAY I BUILD</p>
+            <h2 id="about-title">认真解决问题。<br><span class="outline-word">也认真玩。</span></h2>
+            <p>我喜欢的工具，不需要人一直盯着。<br>我喜欢的界面，不用猜下一步。<br>我喜欢的创作，不必先证明自己有用。</p>
+            <div class="signature"><img src="assets/avatar.png" width="38" height="38" loading="lazy" alt=""><span>mcyh234<span class="signature-note">A WORK IN PROGRESS, ALWAYS.</span></span></div>
+            <div class="build-loop" aria-label="我的迭代过程：想法、构建、测试、改进">
+              <span>IDEA</span><i aria-hidden="true"></i><span>BUILD</span><i aria-hidden="true"></i><span>TEST</span><i aria-hidden="true"></i><span>REPEAT</span>
+              <b class="loop-signal" aria-hidden="true"></b>
+            </div>
+          </div>
+          <div class="principles">
+            <details class="principle reveal" open>
+              <summary><span class="principle-number">01</span><span class="principle-heading"><small>REAL OVER MOCK</small><strong>能跑起来，才算数。</strong></span><svg class="icon" aria-hidden="true"><use href="#arrow-up-right"></use></svg></summary>
+              <div class="principle-body"><p>不用一张漂亮的界面，代替一个真正解决问题的工具。能运行、能部署、能验证，才值得留下来。</p><span class="principle-note">从「可以做」到「现在就能用」。</span></div>
+            </details>
+            <details class="principle reveal">
+              <summary><span class="principle-number">02</span><span class="principle-heading"><small>LESS FRICTION, MORE FREEDOM</small><strong>让机器多做一步。</strong></span><svg class="icon" aria-hidden="true"><use href="#arrow-up-right"></use></svg></summary>
+              <div class="principle-body"><p>自动化不只是替我点一次按钮。断线会恢复，任务会继续，重复的流程交给系统，人就能去做更有意思的事。</p><span class="principle-note">好工具，也照顾没人盯着的时候。</span></div>
+            </details>
+            <details class="principle reveal">
+              <summary><span class="principle-number">03</span><span class="principle-heading"><small>COMPLEX INSIDE, CLEAR OUTSIDE</small><strong>复杂，也能一眼看懂。</strong></span><svg class="icon" aria-hidden="true"><use href="#arrow-up-right"></use></svg></summary>
+              <div class="principle-body"><p>动画讲清过程，颜色说清状态，操作立刻有回应。技术可以很复杂，但不应该把复杂留给使用它的人。</p><span class="principle-note">顺手不是装饰，是完成度的一部分。</span></div>
+            </details>
+            <details class="principle reveal">
+              <summary><span class="principle-number">04</span><span class="principle-heading"><small>USEFUL IS NOT THE ONLY REASON</small><strong>有用，也要有意思。</strong></span><svg class="icon" aria-hidden="true"><use href="#arrow-up-right"></use></svg></summary>
+              <div class="principle-body"><p>一个像素机房，一段交互动效，一个突然冒出来的念头。给实用留位置，也给好奇心留空间。</p><span class="principle-note">玩心与认真，并不冲突。</span></div>
+            </details>
+          </div>
+        </div>
       </section>
 
       <section class="projects-section section" id="projects" aria-labelledby="projects-title">
         <div class="container">
           <div class="section-heading">
             <div>
-              <p class="eyebrow"><span>01 /</span> SELECTED WORK</p>
-              <h2 id="projects-title">想法的具体形状<span class="heading-period">.</span></h2>
+              <p class="eyebrow"><span>02 /</span> PROOF, NOT PROMISES</p>
+              <h2 id="projects-title">少说一点，<br>做出来看看<span class="heading-period">.</span></h2>
             </div>
-            <p class="section-aside">一些解决问题的工具，<br>和一些纯粹出于好奇的尝试。</p>
+            <p class="section-aside">自托管 · 自动化 · 交互实验<br>每一个，都从一个真实的「要不试试」开始。</p>
           </div>
           <div class="project-toolbar" id="project-toolbar" hidden>
             <div class="filters" role="group" aria-label="按项目类型筛选">
@@ -205,27 +256,9 @@
         </div>
       </section>
 
-      <section class="about-section section" id="about" aria-labelledby="about-title">
-        <div class="container about-layout">
-          <div class="about-intro">
-            <p class="eyebrow"><span>02 /</span> A LITTLE ABOUT ME</p>
-            <div class="about-avatar"><img src="assets/avatar.png" width="76" height="76" alt="mcyh234 的绿色像素笑脸头像" loading="lazy"><span class="mono">curiosity<br>in progress<span class="green-text">_</span></span></div>
-            <h2 id="about-title">你好，我是 mcyh234<span class="heading-period">.</span></h2>
-            <p class="about-description">喜欢从「这件事能不能更方便一点」开始，<br class="desktop-break">把日常里的小麻烦，变成一个个小项目。</p>
-            <p class="about-description">这个角落收录了我的自托管应用、自动化工具和 Web 实验。代码公开，想法也欢迎碰撞。</p>
-            <a class="text-link about-github" href="https://github.com/mcyh234" target="_blank" rel="noopener noreferrer">在 GitHub 上认识我<svg class="icon icon-small" aria-hidden="true"><use href="#arrow-up-right"></use></svg></a>
-          </div>
-          <div class="interests">
-            <div class="interest"><span class="interest-number mono">01</span><div><h3>自己的服务，自己掌握</h3><p>从媒体库到网络设备，用自托管把工具放在自己手里。</p><div class="interest-tags"><span>Self-hosted</span><span>Docker</span><span>Web</span></div></div><svg class="icon" aria-hidden="true"><use href="#server"></use></svg></div>
-            <div class="interest"><span class="interest-number mono">02</span><div><h3>少一点重复，多一点自动</h3><p>监控、通知、工作流。让代码接住那些重复的小事。</p><div class="interest-tags"><span>Python</span><span>API</span><span>Bots</span></div></div><svg class="icon" aria-hidden="true"><use href="#workflow"></use></svg></div>
-            <div class="interest"><span class="interest-number mono">03</span><div><h3>实用之外，也要有趣</h3><p>留一点空间给像素、游戏，以及突然冒出来的想法。</p><div class="interest-tags"><span>JavaScript</span><span>Canvas</span><span>Experiments</span></div></div><svg class="icon" aria-hidden="true"><use href="#gamepad-2"></use></svg></div>
-          </div>
-        </div>
-      </section>
-
       <section class="contact-section section" id="contact" aria-labelledby="contact-title">
         <div class="container contact-layout">
-          <div><p class="eyebrow"><span>03 /</span> KEEP IN TOUCH</p><h2 id="contact-title">从一个想法，<br>开始一段对话<span class="heading-period">.</span></h2><p>发现了 bug，有个新点子，或者只是想打个招呼？<br>我们在 GitHub 上见。</p></div>
+          <div><p class="eyebrow"><span>03 /</span> WHAT'S NEXT?</p><h2 id="contact-title">下一个点子，<br>也许从你开始<span class="heading-period">.</span></h2><p>一个难题，一个脑洞，或者一句「要不试试」。<br>带着你的好奇心来，我们在 GitHub 上见。</p></div>
           <div class="contact-actions">
             <a class="contact-github" href="https://github.com/mcyh234" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#github"></use></svg><span><small>FIND ME ON GITHUB</small><strong>@mcyh234</strong></span><svg class="icon contact-arrow" aria-hidden="true"><use href="#arrow-up-right"></use></svg></a>
             <button class="copy-button" id="copy-username" type="button"><svg class="icon icon-small" aria-hidden="true"><use href="#copy"></use></svg><span>复制 GitHub 用户名</span></button>
@@ -234,9 +267,9 @@
       </section>
     </main>
     <footer class="site-footer">
-      <div class="container footer-inner"><a class="footer-brand" href="#home">mcyh234<span class="green-text">.</span></a><p>© <span id="copyright-year">2026</span> mcyh234 <span class="footer-separator">/</span> Built with curiosity.</p><a class="back-top text-link" href="#home">回到顶部<svg class="icon icon-small" aria-hidden="true"><use href="#arrow-up"></use></svg></a></div>
+      <div class="container footer-inner"><a class="footer-brand" href="#home">mcyh234<span class="green-text">.</span></a><p>© <span id="copyright-year">2026</span> mcyh234 <span class="footer-separator">/</span> NEVER A FINAL VERSION.</p><a class="back-top text-link" href="#home">再看一遍<svg class="icon icon-small" aria-hidden="true"><use href="#arrow-up"></use></svg></a></div>
     </footer>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden><svg class="icon icon-small" aria-hidden="true"><use href="#check"></use></svg><span></span></div>
-    <noscript><style>.header-actions, #copy-username { display: none; } @media(max-width: 640px) { .desktop-nav { display: flex; gap: 12px; margin-left: 0; } .nav-index { display: none; } }</style></noscript>
+    <noscript><style>.header-actions, #copy-username { display: none; } .ticker-track, .loop-signal { animation: none !important; } @media(max-width: 640px) { .desktop-nav { display: flex; gap: 12px; margin-left: 0; } .nav-index { display: none; } .desktop-nav a { font-size: 11px; } }</style></noscript>
   </body>
 </html>

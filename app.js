@@ -14,7 +14,7 @@
     themeButton.setAttribute("aria-pressed", String(dark));
     themeButton.setAttribute("aria-label", dark ? "切换到浅色模式" : "切换到深色模式");
     themeButton.dataset.tooltip = dark ? "浅色模式" : "深色模式";
-    document.querySelector('meta[name="theme-color"]').content = dark ? "#171b19" : "#f8f9f6";
+    document.querySelector('meta[name="theme-color"]').content = dark ? "#151716" : "#f3f4f0";
     document.dispatchEvent(new Event("themechange"));
   }
 
@@ -72,6 +72,7 @@
   let activeFilter = "all";
 
   function filterProjects() {
+    document.dispatchEvent(new Event("projects:before-filter"));
     const query = search.value.trim().toLocaleLowerCase();
     const terms = query.split(/\s+/).filter(Boolean);
     let visible = 0;
@@ -91,6 +92,7 @@
     emptyState.hidden = visible !== 0;
     exploreLink.hidden = activeFilter !== "all" || query.length !== 0;
     resultCount.textContent = activeFilter === "all" && query === "" ? `${cards.length} 个公开项目` : `找到 ${visible} 个项目`;
+    document.dispatchEvent(new Event("projects:filtered"));
   }
 
   filters.forEach((button) => button.addEventListener("click", () => {
@@ -152,6 +154,9 @@
   const navLinks = [...document.querySelectorAll("[data-nav]")];
   let scrollFrame;
   function updateNavigation() {
+    const extent = document.documentElement.scrollHeight - innerHeight;
+    document.querySelector(".reading-progress").style.transform = `scaleX(${extent > 0 ? Math.min(1, scrollY / extent) : 0})`;
+    document.querySelector(".site-header").classList.toggle("is-scrolled", scrollY > 40);
     const marker = Math.min(180, window.innerHeight * 0.25);
     let current = "home";
     sections.forEach((section) => {
@@ -170,91 +175,4 @@
     if (!scrollFrame) scrollFrame = requestAnimationFrame(updateNavigation);
   }, { passive: true });
   updateNavigation();
-
-  // The field uses the same five-pixel smile as the public GitHub identicon.
-  const canvas = document.getElementById("pixel-canvas");
-  const context = canvas.getContext("2d");
-  if (!context) return;
-  const hero = document.querySelector(".hero");
-  const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let width = 0;
-  let height = 0;
-  let phase = 0;
-  let frame = null;
-  let visible = true;
-  let lastTime = 0;
-  let pointer = { x: -1000, y: -1000 };
-  const smile = [[2, 0], [0, 3], [4, 3], [1, 4], [2, 4], [3, 4]];
-
-  function draw(time = 0) {
-    frame = null;
-    if (!width || !height) return;
-    const dark = root.dataset.theme === "dark";
-    const mobile = width < 700;
-    context.clearRect(0, 0, width, height);
-    const cell = mobile ? 22 : 29;
-    const centerSafeWidth = mobile ? width * 0.39 : 310;
-    for (let x = 13; x < width; x += cell) {
-      for (let y = 13; y < height - 35; y += cell) {
-        const center = Math.abs(x - width / 2) < centerSafeWidth && y > 55 && y < height - 72;
-        if (center) continue;
-        const distance = Math.hypot(pointer.x - x, pointer.y - y);
-        const near = Math.max(0, 1 - distance / 110);
-        context.fillStyle = dark ? `rgba(155,174,141,${0.1 + near * 0.32})` : `rgba(98,120,75,${0.12 + near * 0.35})`;
-        const size = near > 0.15 ? 2 + near * 4 : 1;
-        context.fillRect(x, y, size, size);
-      }
-    }
-
-    const side = mobile ? 14 : 22;
-    const motifs = mobile
-      ? [{ x: -25, y: 66, color: "green" }, { x: width - 50, y: height - 142, color: "blue" }]
-      : [{ x: Math.max(24, width / 2 - 575), y: 125, color: "green" }, { x: width / 2 + 420, y: 252, color: "blue" }];
-    motifs.forEach((motif, index) => {
-      const drift = motionPreference.matches ? 0 : Math.sin(phase + index * 2) * 4;
-      smile.forEach(([x, y], pixel) => {
-        const opacity = mobile ? 0.13 : 0.18 + Math.sin(phase * 0.6 + pixel) * 0.015;
-        const color = motif.color === "blue" ? (dark ? "137,163,216" : "118,148,206") : (dark ? "173,202,118" : "150,178,91");
-        context.fillStyle = `rgba(${color},${opacity})`;
-        context.fillRect(motif.x + x * (side + 3), motif.y + y * (side + 3) + drift, side, side);
-      });
-    });
-
-    if (!motionPreference.matches && visible && !document.hidden) {
-      if (lastTime) phase += Math.min(time - lastTime, 50) * 0.00045;
-      lastTime = time;
-      frame = requestAnimationFrame(draw);
-    }
-  }
-
-  function scheduleDraw() {
-    if (frame !== null) cancelAnimationFrame(frame);
-    frame = null;
-    lastTime = 0;
-    draw(performance.now());
-  }
-  function resize() {
-    width = hero.clientWidth;
-    height = hero.clientHeight;
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(width * ratio);
-    canvas.height = Math.round(height * ratio);
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    scheduleDraw();
-  }
-  hero.addEventListener("pointermove", (event) => {
-    if (event.pointerType === "touch" || motionPreference.matches) return;
-    const rect = hero.getBoundingClientRect();
-    pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-  }, { passive: true });
-  hero.addEventListener("pointerleave", () => { pointer = { x: -1000, y: -1000 }; });
-  new ResizeObserver(resize).observe(hero);
-  new IntersectionObserver(([entry]) => {
-    visible = entry.isIntersecting;
-    scheduleDraw();
-  }).observe(hero);
-  document.addEventListener("themechange", scheduleDraw);
-  document.addEventListener("visibilitychange", scheduleDraw);
-  motionPreference.addEventListener("change", scheduleDraw);
-  resize();
 })();
